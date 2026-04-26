@@ -5,6 +5,9 @@ import { ThemeProvider } from "./components/ThemeProvider";
 import { ParticleClientWrapper } from "./components/ParticleClientWrapper";
 import Navbar from "./components/Navbar";
 import { ToastProvider } from "./components/ToastProvider";
+import { WebSocketProvider } from "./components/WebSocketProvider";
+import { PageErrorBoundary } from "./components/ui/PageErrorBoundary";
+import { GlobalErrorHandler } from "./components/GlobalErrorHandler";
 
 const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
 const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"] });
@@ -18,14 +21,19 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}>
       <body className="min-h-full flex flex-col">
-        <ThemeProvider>
-          <ToastProvider>
-            <ParticleClientWrapper>
-              <Navbar />
-              <div className="flex-1">{children}</div>
-            </ParticleClientWrapper>
-          </ToastProvider>
-        </ThemeProvider>
+        <PageErrorBoundary>
+          <ThemeProvider>
+            <ToastProvider>
+              <GlobalErrorHandler />
+              <ParticleClientWrapper>
+                <WebSocketProvider>
+                  <Navbar />
+                  <div className="flex-1">{children}</div>
+                </WebSocketProvider>
+              </ParticleClientWrapper>
+            </ToastProvider>
+          </ThemeProvider>
+        </PageErrorBoundary>
       </body>
     </html>
   );
