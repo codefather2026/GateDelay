@@ -14,6 +14,7 @@ export interface Market {
   outcome?: MarketOutcome;
   resolvedAt?: Date;
   oracleData?: unknown;
+  categoryId?: string;
 }
 
 export interface ResolutionEvent {
@@ -45,6 +46,19 @@ export class MarketResolverService {
 
   getAllMarkets(): Market[] {
     return Array.from(this.markets.values());
+  }
+
+  getMarketsByIds(ids: string[]): Market[] {
+    return ids
+      .map((id) => this.markets.get(id))
+      .filter((m): m is Market => m !== undefined);
+  }
+
+  updateMarketCategory(marketId: string, categoryId: string): void {
+    const market = this.markets.get(marketId);
+    if (market) {
+      market.categoryId = categoryId;
+    }
   }
 
   getResolutionHistory(): ResolutionEvent[] {
